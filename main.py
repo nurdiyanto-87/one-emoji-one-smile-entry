@@ -35,6 +35,12 @@ def main() -> None:
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
         f.write(EMOJI)
+    # Read back and verify: the gate requires UTF-8 text of 1-8 chars,
+    # not only whitespace. Fail loudly instead of shipping a bad file.
+    with open(OUTPUT_PATH, "r", encoding="utf-8", newline="") as f:
+        written = f.read()
+    if len(written) != 1 or written.isspace() or written != EMOJI:
+        raise SystemExit("entry.txt failed self-check: %r" % (written,))
 
 
 if __name__ == "__main__":
